@@ -15,7 +15,7 @@
                 <router-link class="nav-link text-dark" to="/appointment/list"><i class="fa fa-calendar-plus-o"></i> Randevular</router-link>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" href="/appointment/create"><i class="fa fa-plus"></i> Randevu Oluştur</a>
+                <router-link class="nav-link text-dark" :to="{ name:'AppointmentCreate', params:{ codes:postcodes, lt:lats, ln:lngs } }"><i class="fa fa-plus"></i> Randevu Oluştur</router-link>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,9 +47,18 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
+    data(){
+        return{
+            postcodes: [],
+            lats: [],
+            lngs: []
+        }
+    },
     methods:{
         ...mapActions({
-            signOutAction: 'auth/signOut'
+            signOutAction: 'auth/signOut',
+            getAll: 'apartment/getAll',
+            getLatLong: 'map/getLatLong'
         }),
 
         signOut(){
@@ -58,7 +67,22 @@ export default {
                     name: 'Home'
                 })
             })
-        }
+        },
+
+        initializePostcode(){
+          this.getAll().then(response => {
+          for(var i=0; i<response.length; i++){
+              this.postcodes.push(response[i].postcode)
+              this.getLatLong(response[i].postcode).then(response => {
+                  this.lats.push(response.result.latitude)
+                  this.lngs.push(response.result.longitude)
+              })
+          }
+        })
+      },
+    },
+    created(){
+        this.initializePostcode()
     }
 }
 </script>

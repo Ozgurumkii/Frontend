@@ -32,6 +32,11 @@ export default {
     }
   },
   actions: {
+    async getAll(){
+        let response = await axios.get('apartmentlist?token='+store.getters['auth/authenticated'])
+        return response.data;
+    },
+
       async apartmentList(){
           let response = await axios.get('apartments?token='+store.getters['auth/authenticated']);
           return response.data
