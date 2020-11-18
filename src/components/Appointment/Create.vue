@@ -54,7 +54,7 @@ export default {
         return {
                 platform: null,
                 distance: null,
-                apikey: "DPcVUQBLarowJLWcvaa_2eThTXRcOFJWFDfmLvUSi5g",
+                apikey: "BLOAtMKPi-dlDFs-8xDpfLFF_q0i0WsmAkTOZgn6DBI",
                 currentPostCode: "",
                 centerLat:51.729157,
                 centerLng:0.478027,

@@ -38,8 +38,6 @@
 <script>
   export default {
     name: 'AppointmentList',
-    components: {
-    },
     data() {
       return {
       }

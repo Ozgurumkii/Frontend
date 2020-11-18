@@ -18,11 +18,10 @@
 </template>
 
 <script>
-
+import { mapActions } from 'vuex'
 export default {
   name: 'Signin',
   components: {
-    //
   },
   data(){
     return{
@@ -33,8 +32,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      signIn: 'auth/signIn'
+    }),
     submit(){
-      console.log("Submit!!");
+      this.signIn(this.form).then(() => {
+        this.$router.replace({
+          name: 'Home'
+        })
+      })
     }
   }
 }

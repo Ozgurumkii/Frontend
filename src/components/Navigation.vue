@@ -36,10 +36,29 @@
                 <a class="dropdown-item" href="#">Profil</a>
                 <a class="dropdown-item" href="#">İstatistikler</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout">Çıkış Yap</a>
+                <a class="dropdown-item" href="#" @click.prevent="signOut">Çıkış Yap</a>
                 </div>
             </li>
         </div>
         </nav>
     </div>
 </template>
+
+<script>
+import { mapActions } from 'vuex'
+export default {
+    methods:{
+        ...mapActions({
+            signOutAction: 'auth/signOut'
+        }),
+
+        signOut(){
+            this.signOutAction().then(() => {
+                this.$router.replace({
+                    name: 'Home'
+                })
+            })
+        }
+    }
+}
+</script>

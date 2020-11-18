@@ -15,14 +15,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="index in 5" :key="index">
-                <th>Ezgi</th>
-                <td>Kavdır</td>
-                <td>ezgikavdir@ozgurumkii.com</td>
-                <td>0555 555 55 55</td>
+                <tr v-for="customer in customers" :key="customer.id">
+                <th>{{ customer.name }}</th>
+                <td>{{ customer.surname }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.phonenumber }}</td>
                 <td>
-                    <router-link class="btn btn-warning mr-2" to="/customer/update">Düzenle</router-link>
-                    <button class="btn btn-danger">Sil</button>
+                    <router-link 
+                    class="btn btn-warning mr-2" 
+                    :to="{ name: 'CustomerUpdate', 
+                    params: { id:customer.id, name:customer.name, surname:customer.surname, email:customer.email, phonenumber:customer.phonenumber } }">Düzenle</router-link>
+                    <a href="#" class="btn btn-danger" @click="removeCustomer(customer.id)">Sil</a>
                 </td>
                 </tr>
             </tbody>
@@ -32,13 +35,36 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
   export default {
     name: 'CustomerList',
-    components: {
-    },
     data() {
       return {
+          customers: null
       }
+    },
+    methods:{
+        ...mapActions({
+            customerList: 'customer/customerList',
+            deleteCustomer: 'customer/deleteCustomer'
+        }),
+
+        getCustomers(){
+            this.customerList().then(response => {
+                this.customers = response
+            })
+        },
+
+        removeCustomer(customerId){
+            this.deleteCustomer(customerId).then(response => {
+                if(response == 200){
+                    this.getCustomers()
+                }
+            })
+        }
+    },
+    created(){
+        this.getCustomers()
     }
   }
 </script>

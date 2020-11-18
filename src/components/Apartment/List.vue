@@ -9,18 +9,16 @@
                 <tr>
                 <th>Postcode</th>
                 <th>Durum</th>
-                <th>Oluşturulma Tarihi</th>
                 <th>İşlemler</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="index in 5" :key="index">
-                <th>Bla bla</th>
-                <td>durum durum</td>
-                <td>tarih tarih</td>
+                <tr v-for="apartment in apartments" :key="apartment.id">
+                <td>{{ apartment.postcode }}</td>
+                <td>{{ apartment.state == 1 ? "Müsait" : "Dolu" }}</td>
                 <td>
-                    <router-link class="btn btn-warning mr-2" to="/apartment/update">Düzenle</router-link>
-                    <button class="btn btn-danger">Sil</button>
+                    <router-link class="btn btn-warning mr-2" :to="{ name : 'ApartmentUpdate', params : { id:apartment.id, postcode:apartment.postcode } }">Düzenle</router-link>
+                    <a href="#" class="btn btn-danger" @click="removeApartment(apartment.id)">Sil</a>
                 </td>
                 </tr>
             </tbody>
@@ -30,6 +28,35 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
+    data(){
+        return{
+            apartments: null
+        }
+    },
+    methods:{
+        ...mapActions({
+            apartmentList: 'apartment/apartmentList',
+            deleteApartment: 'apartment/deleteApartment'
+        }),
+
+        getApartments(){
+            this.apartmentList().then(response => {
+                this.apartments = response
+            })
+        },
+
+        removeApartment(apartmentId){
+            this.deleteApartment(apartmentId).then(response => {
+                if(response == 200){
+                    this.getApartments()
+                }
+            })
+        }
+    },
+    created: function(){
+        this.getApartments()
+    }
 }
 </script>
