@@ -32,6 +32,11 @@ export default {
     }
   },
   actions: {
+      async getApartmentWithPostcode(_, postcode){
+        let response = await axios.get('getapartment/'+postcode+'?token='+store.getters['auth/authenticated'])
+        return response.data.apartment[0].id
+      },
+
     async getAll(){
         let response = await axios.get('apartmentlist?token='+store.getters['auth/authenticated'])
         return response.data;

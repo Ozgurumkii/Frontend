@@ -32,6 +32,17 @@ export default {
     }
   },
   actions: {
+      async getCustomerWithEmail(_, customer){
+          let response = await axios.get('getcustomer/'+customer.email+'?token='+store.getters['auth/authenticated'])
+          if(response.data.status){
+              return response.data.customer[0].id
+            }
+            else{
+                let response = await axios.post('customers?token='+store.getters['auth/authenticated'], customer)
+                return response.data.customer.id
+            }
+      },
+
       async customerList(){
           let response = await axios.get('customers?token='+store.getters['auth/authenticated']);
           return response.data

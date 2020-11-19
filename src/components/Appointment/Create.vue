@@ -1,21 +1,21 @@
 <template>
     <div class="row mb-5">
         <div class="col-sm-5">
-            <form class="mt-5">
+            <form @submit.prevent="addAppointment" class="mt-5">
                 <div class="alert alert-info text-center">
                     Müşteri Bilgisi
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="İsim">
+                    <input type="text" class="form-control" placeholder="İsim" v-model="customer.name">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Soyisim">
+                    <input type="text" class="form-control" placeholder="Soyisim" v-model="customer.surname">
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="E-Posta">
+                    <input type="email" class="form-control" placeholder="E-Posta" v-model="customer.email">
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Telefon (0 5XX)">
+                    <input type="text" class="form-control" placeholder="Telefon (0 5XX)" v-model="customer.phonenumber">
                 </div>
                 <hr>
                 <div class="alert alert-info text-center">
@@ -44,6 +44,8 @@
             <div class="alert alert-info mt-3">
                 <p v-text="distanceText"></p>
             </div>
+            <p class="text-success" v-text="success"></p>
+            <p class="text-error" v-text="error"></p>
         </div>
     </div>
 </template>
@@ -65,11 +67,13 @@ export default {
                     startdate: '',
                     enddate: ''
                 },
-                currentPostCode: "",
+                currentPostCode: '',
+                success: '',
+                error: '',
                 platform: null,
                 distanceText: '',
                 distanceSeconds: 0,
-                apikey: "TDprOmh5AoOfFljZtXPjufuWFw7dhvioMuHS9SEtEVw",
+                apikey: "y1adIooHaOlJWpmrkAJksZl0EPpC0hWDqFpaq28Rv8s",
                 centerLat:51.729157,
                 centerLng:0.478027,
                 postcodes: [],
@@ -89,8 +93,11 @@ export default {
   methods:{
       ...mapActions({
           distance: 'appointment/distance',
+          createAppointment: 'appointment/createAppointment',
           getAll: 'apartment/getAll',
-          getLatLong: 'map/getLatLong'
+          getApartmentWithPostcode: 'apartment/getApartmentWithPostcode',
+          getLatLong: 'map/getLatLong',
+          getCustomerWithEmail: 'customer/getCustomerWithEmail',
       }),
 
       changeenddate(dt){
@@ -177,6 +184,25 @@ export default {
       // add UI
       H.ui.UI.createDefault(map, maptypes);
       // End rendering the initial map
+    },
+
+    addAppointment(){
+        this.getCustomerWithEmail(this.customer).then(response => {
+            this.appointment.customerid = response
+            this.getApartmentWithPostcode(this.currentPostCode).then(response => {
+                this.appointment.apartmentid = response
+                this.createAppointment(this.appointment).then(response => {
+                    if(response){
+                        this.success = 'Kayıt başarıyla oluşturuldu'
+                        this.error = ''
+                    }
+                    else{
+                        this.success = ''
+                        this.error = 'Kayıt tarihi daha önce alınmıştır'
+                    }
+                })
+            })
+        })
     }
   },
   created(){

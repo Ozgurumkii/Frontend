@@ -40,7 +40,7 @@ export default {
       async createAppointment({ commit }, appointment){
           let response = await axios.post('appointments?token='+store.getters['auth/authenticated'], appointment)
           commit('SET_APPOINTMENT', response.data)
-          return response.status
+          return response.data.status
       },
 
       async updateAppointment({ commit }, appointment){
