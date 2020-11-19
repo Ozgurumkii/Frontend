@@ -1,5 +1,10 @@
 # frontend
 
+## Usage
+```
+axios.default.baseURL = YourApiPath
+```
+
 ## Project setup
 ```
 npm install
